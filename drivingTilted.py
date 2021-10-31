@@ -7,19 +7,19 @@ from datetime import datetime
 #consts
 alpha=1/3
 T1=2
-J=4.1
-V=4.1
+J=2.5
+V=2.5
 Omega=2*np.pi/T1
 
-b=100
-a=3
+b=2
+a=5
 T2=T1*b/a
-omegaF=0#2*np.pi/T2
+omegaF=2*np.pi/T2
 T=T1*b#total small time
 
 Q=100#small time interval number
-N=100#k num
-M=100#beta num
+N=20#k num
+M=15#beta num
 
 def VA(beta):
     return V*np.cos(2*np.pi*alpha*0-beta)
@@ -70,7 +70,7 @@ def Hr1(t,k,beta):
     retMat[0,2]=J/2*np.exp(1j*(omegaF*t+k))
     retMat[2,0]=J/2*np.exp(-1j*(omegaF*t+k))
     return retMat
-dt=T1/Q#small time interval
+dt=T/Q#small time interval
 tSmallValsAll=[dt*q for q in range(0,Q)]#small time points
 betaValsAll=[2*np.pi/M*m for m in range(0,M)]# beta vals
 kValsAll=[2*np.pi/N*n for n in range(0,N)]#k vals
@@ -83,7 +83,7 @@ def U(k,beta):
     """
     retU=np.eye(3,dtype=complex)
     for tq in tSmallValsAll[::-1]:
-        retU=retU@slin.expm(-1j*dt*Hr(tq,k,beta))
+        retU=retU@slin.expm(-1j*dt*Hr1(tq,k,beta))
     return retU
 
 tStart = datetime.now()
@@ -116,8 +116,27 @@ for UByKList in UByBetaByK:
     phaseByBetaByK.append(phaseByK)
     eigVecsByBetaByK.append(eigVecByK)
 
+#calculate Chern number
+mats012=[]
+for bnum in range(0,3):
+    mats012.append(np.zeros((len(betaValsAll),len(kValsAll))))
 
+for bnum in range(0,3):
+    for m in range(0,M):
+        for n in   range(0,N):
+            tmp=-np.angle(
+                np.vdot(eigVecsByBetaByK[m][n][bnum],eigVecsByBetaByK[(m+1)%M][n][bnum])
+                *np.vdot(eigVecsByBetaByK[(m+1)%M][n][bnum],eigVecsByBetaByK[(m+1)%M][(n+1)%N][bnum])
+                *np.vdot(eigVecsByBetaByK[(m+1)%M][(n+1)%N][bnum],eigVecsByBetaByK[m][(n+1)%N][bnum])
+                *np.vdot(eigVecsByBetaByK[m][(n+1)%N][bnum],eigVecsByBetaByK[m][n][bnum])
+            )
+            mats012[bnum][m,n]=tmp
 
+cns=[]
+for bnum in range(0,3):
+    cnTmp=-1/(2*np.pi)*mats012[bnum].sum(axis=(0,1))
+    cns.append(cnTmp)
+print(cns)
 
 
 #data serialization
@@ -139,7 +158,17 @@ tEnd = datetime.now()
 print("computation time: ", tEnd - tStart)
 fig = plt.figure()
 ax = fig.gca(projection='3d')
-surf0 = ax.plot_trisurf(pltBt, pltK, pltPhase0, linewidth=0.1, color="blue")
-surf1 = ax.plot_trisurf(pltBt, pltK, pltPhase1, linewidth=0.1, color="green")
-surf2 = ax.plot_trisurf(pltBt, pltK, pltPhase2, linewidth=0.1, color="red")
+surf0 = ax.plot_trisurf(pltBt, pltK, pltPhase0, linewidth=0.1, color="blue",label="band0")
+surf1 = ax.plot_trisurf(pltBt, pltK, pltPhase1, linewidth=0.1, color="green",label="band1")
+surf2 = ax.plot_trisurf(pltBt, pltK, pltPhase2, linewidth=0.1, color="red",label="band2")
+ax.set_xlabel("$\\beta/\pi$")
+ax.set_ylabel("$k/\pi$")
+ax.set_zlabel("$\phi/\pi$")
+surf0._facecolors2d=surf0._facecolors3d
+surf0._edgecolors2d=surf0._edgecolors3d
+surf1._facecolors2d=surf1._facecolors3d
+surf1._edgecolors2d=surf1._edgecolors3d
+surf2._facecolors2d=surf2._facecolors3d
+surf2._edgecolors2d=surf2._edgecolors3d
+plt.legend()
 plt.savefig("tmp.png")
