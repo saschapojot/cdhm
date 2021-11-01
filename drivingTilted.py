@@ -11,15 +11,15 @@ J=2.5
 V=2.5
 Omega=2*np.pi/T1
 
-b=2
-a=5
+b=3
+a=4
 T2=T1*b/a
 omegaF=2*np.pi/T2
 T=T1*b#total small time
 
 Q=100#small time interval number
 N=20#k num
-M=15#beta num
+M=19#beta num
 
 def VA(beta):
     return V*np.cos(2*np.pi*alpha*0-beta)
@@ -37,7 +37,7 @@ def Hr(t,k,beta):
     :param t:
     :param k:
     :param beta:
-    :return:
+    :return:Hr
     """
     unit=1+0j
     retMat=np.diag([unit*VA(beta)*np.cos(Omega*t),unit*VB(beta)*np.cos(Omega*t),unit*VC(beta)*np.cos(Omega*t)])
@@ -158,12 +158,13 @@ tEnd = datetime.now()
 print("computation time: ", tEnd - tStart)
 fig = plt.figure()
 ax = fig.gca(projection='3d')
-surf0 = ax.plot_trisurf(pltBt, pltK, pltPhase0, linewidth=0.1, color="blue",label="band0")
-surf1 = ax.plot_trisurf(pltBt, pltK, pltPhase1, linewidth=0.1, color="green",label="band1")
-surf2 = ax.plot_trisurf(pltBt, pltK, pltPhase2, linewidth=0.1, color="red",label="band2")
+surf0 = ax.plot_trisurf(pltBt, pltK, pltPhase0, linewidth=0.1, color="blue",label="band0: "+str(int(round(cns[0]))))
+surf1 = ax.plot_trisurf(pltBt, pltK, pltPhase1, linewidth=0.1, color="green",label="band1: "+str(int(round(cns[1]))))
+surf2 = ax.plot_trisurf(pltBt, pltK, pltPhase2, linewidth=0.1, color="red",label="band2: "+str(int(round(cns[2]))))
 ax.set_xlabel("$\\beta/\pi$")
 ax.set_ylabel("$k/\pi$")
 ax.set_zlabel("$\phi/\pi$")
+plt.title("$T_{1}/T_{2}=$"+str(a)+"/"+str(b))
 surf0._facecolors2d=surf0._facecolors3d
 surf0._edgecolors2d=surf0._edgecolors3d
 surf1._facecolors2d=surf1._facecolors3d
