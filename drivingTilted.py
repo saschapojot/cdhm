@@ -11,14 +11,14 @@ J=2.5
 V=2.5
 Omega=2*np.pi/T1
 
-b=3
-a=4
+b=1
+a=3
 T2=T1*b/a
 omegaF=2*np.pi/T2
 T=T1*b#total small time
 
 Q=100#small time interval number
-N=20#k num
+N=30#k num
 M=19#beta num
 
 def VA(beta):
@@ -137,8 +137,29 @@ for bnum in range(0,3):
     cnTmp=-1/(2*np.pi)*mats012[bnum].sum(axis=(0,1))
     cns.append(cnTmp)
 print(cns)
+#########################take one beta
+mval=17
+oneBeta=[]
+onePhase0=[]
+onePhase1=[]
+onePhase2=[]
+oneK0=[]
+for n in range(0,N):
 
-
+    oneK0.append(kValsAll[n]/np.pi)
+    onePhase0.append(phaseByBetaByK[mval][n][0]/np.pi)
+    onePhase1.append(phaseByBetaByK[mval][n][1]/np.pi)
+    onePhase2.append(phaseByBetaByK[mval][n][2]/np.pi)
+plt.figure()
+plt.plot(oneK0,onePhase0,color="blue")
+plt.plot(oneK0,onePhase1,color="green")
+plt.plot(oneK0,onePhase2,color="red")
+plt.xlabel("k")
+plt.ylim(-1,1)
+# plt.title("$\\beta=$"+str(betaValsAll[mval]))
+plt.savefig("tmp1.png")
+plt.close()
+######################################
 #data serialization
 pltBt=[]
 pltK=[]

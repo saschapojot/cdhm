@@ -14,7 +14,7 @@ J = 2.5
 V = 2.5
 Omega = 2 * np.pi / T1
 
-b = 2
+b = 1
 a = 3
 T2 = T1 * b / a
 omegaF = 2 * np.pi / T2
@@ -133,7 +133,7 @@ j = N / 2
 sgm = 0.2
 for n in range(0, N):
     for kNum in range(0, len(kValsAll)):
-        wsInit += np.exp(1j * (kValsAll[kNum] - np.pi) * (j - n)) * np.kron(realBasis[n], eigVecsFromBand[kNum])
+        wsInit += np.exp(1j * (kValsAll[kNum]-np.pi) * (j - n)) * np.kron(realBasis[n], eigVecsFromBand[kNum])
 wsInit /= np.linalg.norm(wsInit)
 
 tEigEnd = datetime.now()
