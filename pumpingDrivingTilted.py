@@ -113,6 +113,7 @@ for UTmp in UByK:
     indsTmp = np.argsort(eigPhasesTmp)
     sortedPhases = [eigPhasesTmp[ind] for ind in indsTmp]
     sortedVecs = [vecsTmp[:, ind] for ind in indsTmp]
+
     phaseByK.append(sortedPhases)
     eigVecsByK.append(sortedVecs)
 
@@ -120,6 +121,14 @@ bandNum = 0
 eigVecsFromBand = []
 for vecs in eigVecsByK:
     eigVecsFromBand.append(vecs[bandNum])
+#phase smoothing
+for j in range(0,N-1):
+    dThetaTmp=np.angle(np.vdot(eigVecsFromBand[j],eigVecsFromBand[j+1]))
+    eigVecsFromBand[j+1]*=np.exp(-1j*dThetaTmp)
+thetaTot=np.angle(np.vdot(eigVecsFromBand[0],eigVecsFromBand[-1]))
+for j in range(0,N-1):
+    eigVecsFromBand[j]*=np.exp(1j*thetaTot*j/(N-1))
+
 # real space basis
 realBasis = []
 for n in range(0, N):
@@ -132,7 +141,7 @@ wsInit = np.zeros(3 * N, dtype=complex)
 j = N / 2
 sgm = 0.2
 for n in range(0, N):
-    for kNum in range(0, len(kValsAll)):
+    for kNum in range(0, N):
         wsInit += np.exp(1j * (kValsAll[kNum]-np.pi) * (j - n)) * np.kron(realBasis[n], eigVecsFromBand[kNum])
 wsInit /= np.linalg.norm(wsInit)
 
