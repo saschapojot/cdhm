@@ -182,7 +182,7 @@ locations = np.append(np.arange(1,L/2+q +1), np.arange(1+q-L/2,1))
 # locations=np.arange(1,3*N+1)
 plt.figure()
 plt.plot(locations,np.abs(wsInit))
-plt.savefig("tmp2.png")
+plt.savefig("init.png")
 plt.close()
 
 
