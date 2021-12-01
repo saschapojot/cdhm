@@ -12,7 +12,7 @@ V=2.5
 Omega=2*np.pi/T1
 
 b=1
-a=3
+a=1
 T2=T1*b/a
 omegaF=2*np.pi/T2
 T=T2*a#total small time
@@ -133,7 +133,7 @@ for UTmp in UByPhi:
     phaseByPhi.append(sortedPhases)
     eigVecsByPhi.append(sortedVecs)
 
-bandNum=1
+bandNum=0
 eigVecsFromBand=[]
 for vecs in eigVecsByPhi:
     eigVecsFromBand.append(vecs[bandNum])
@@ -159,7 +159,9 @@ for j in range(0,N):
     subLat0.append(vec[0])
     subLat1.append(vec[1])
     subLat2.append(vec[2])
-wsInit = np.zeros(3 * N, dtype=complex)
+wsInit = np.zeros(3 * N, dtype=complex)#init vec
+datsAll=[]# vecs of evolution
+datsAll.append(wsInit)
 realSubLat0=np.fft.ifft(subLat0,norm="ortho")
 realSubLat1=np.fft.ifft(subLat1,norm="ortho")
 realSubLat2=np.fft.ifft(subLat2,norm="ortho")
@@ -177,7 +179,6 @@ print("time for initialization: ", tEigEnd - tStart)
 
 q=3
 locations = np.append(np.arange(1,L/2+q +1), np.arange(1+q-L/2,1))
-
 # locations=np.arange(1,3*N+1)
 plt.figure()
 plt.plot(locations,np.abs(wsInit))
@@ -197,14 +198,15 @@ for m in range(0,M):
         tmp2=np.fft.ifft(tmp1,norm="ortho")
         tmp3=np.exp(-1j*J*dt*np.cos(kTotal))*tmp2
         state=np.fft.fft(tmp3,norm="ortho")
+    datsAll.append(state)
 
 
 tPumpEnd=datetime.now()
 print("evolution time: ",tPumpEnd-tPumpStart)
 f_center = np.sum(locations* (np.abs(state)**2))
 
-qq=3.0
-dis = (f_center - ini_center)/qq
+
+dis = (f_center - ini_center)/3.0
 
 
 
@@ -216,3 +218,17 @@ plt.figure()
 
 plt.plot(locations, np.abs(state), 'r')
 plt.savefig("last.png")
+plt.close()
+###############plot displacements
+
+pumpings=[]
+for vecTmp in datsAll:
+    displacementTmp=(np.sum(locations* (np.abs(vecTmp)**2))-ini_center)/3.0
+    pumpings.append(displacementTmp)
+
+plt.figure()
+plt.plot(np.arange(0,M+1),pumpings,color="black")
+plt.title("pumping = "+str(dis))
+plt.xlabel("$t/T$")
+plt.savefig("displacement.png")
+plt.close()
