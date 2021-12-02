@@ -1,9 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import scipy.linalg as slin
+
 from datetime import datetime
 
-
+#script for chern number and band
 #consts
 alpha=1/3
 T1=2
@@ -11,15 +11,15 @@ J=2.5
 V=2.5
 Omega=2*np.pi/T1
 
-b=1
-a=3
+b=4
+a=1
 T2=T1*b/a
-omegaF=0#2*np.pi/T2
+omegaF=2*np.pi/T2
 T=T2*a#total small time
 
 Q=100#small time interval number
-N=50#bloch momentum num
-M=50#beta num
+N=40#bloch momentum num
+M=40#beta num
 
 
 dt=T/Q
@@ -165,7 +165,7 @@ print(cns)
 tEnd=datetime.now()
 print("calculation time:",tEnd-tStart)
 #########################take one beta
-mval=17
+mval=int(M*1/2)
 oneBeta=[]
 onePhase0=[]
 onePhase1=[]
@@ -209,7 +209,7 @@ surf1 = ax.plot_trisurf(pltBt, pltPhi, pltPhase1, linewidth=0.1, color="green",l
 surf2 = ax.plot_trisurf(pltBt, pltPhi, pltPhase2, linewidth=0.1, color="red",label="band2: "+str(int(round(cns[2]))))
 ax.set_xlabel("$\\beta/\pi$")
 ax.set_ylabel("$\phi/\pi$")
-ax.set_zlabel("$\phi/\pi$")
+ax.set_zlabel("eigenphase$/\pi$")
 plt.title("$T_{1}/T_{2}=$"+str(a)+"/"+str(b))
 surf0._facecolors2d=surf0._facecolors3d
 surf0._edgecolors2d=surf0._edgecolors3d

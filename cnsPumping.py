@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 from datetime import datetime
-
+#script for pumping
 
 #consts
 alpha=1/3
@@ -11,15 +11,15 @@ J=2.5
 V=2.5
 Omega=2*np.pi/T1
 
-b=1
+b=4
 a=1
 T2=T1*b/a
 omegaF=2*np.pi/T2
 T=T2*a#total small time
 
 Q=1000#small time interval number
-N=1024#bloch momentum num
-M=1000#beta num
+N=2048#bloch momentum num
+M=20000#beta num
 dt=T/Q
 L=3*N
 
@@ -228,7 +228,7 @@ for vecTmp in datsAll:
 
 plt.figure()
 plt.plot(np.arange(0,M+1),pumpings,color="black")
-plt.title("pumping = "+str(dis))
+plt.title("$T_{1}/T_{2}=$"+str(a)+"/"+str(b)+", pumping = "+str(dis))
 plt.xlabel("$t/T$")
-plt.savefig("displacement.png")
+plt.savefig("T1"+str(T1)+"T2"+str(T2)+"displacement.png")
 plt.close()
