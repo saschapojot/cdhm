@@ -11,7 +11,7 @@ J=2.5
 V=2.5
 Omega=2*np.pi/T1
 
-b=5
+b=1
 a=3
 T2=T1*b/a
 omegaF=2*np.pi/T2
@@ -161,7 +161,7 @@ for j in range(0,N):
     subLat2.append(vec[2])
 wsInit = np.zeros(3 * N, dtype=complex)#init vec
 datsAll=[]# vecs of evolution
-datsAll.append(wsInit)
+
 realSubLat0=np.fft.ifft(subLat0,norm="ortho")
 realSubLat1=np.fft.ifft(subLat1,norm="ortho")
 realSubLat2=np.fft.ifft(subLat2,norm="ortho")
@@ -171,6 +171,7 @@ for j in range(0,N):
     wsInit[3*j+1]=realSubLat1[j]
     wsInit[3*j+2]=realSubLat2[j]
 wsInit /= np.linalg.norm(wsInit,ord=2)
+datsAll.append(wsInit)
 initDat=np.array([wsInit,np.abs(wsInit)]).T
 df=pd.DataFrame(initDat,columns=["psi0","abs"])
 df.to_csv("ws0.csv")
