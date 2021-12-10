@@ -11,19 +11,19 @@ J=2.5
 V=2.5
 Omega=2*np.pi/T1
 
-b=4
-a=1
+b=5
+a=3
 T2=T1*b/a
 omegaF=2*np.pi/T2
 T=T2*a#total small time
 
 Q=1000#small time interval number
-N=2048#bloch momentum num
-M=20000#beta num
+N=1024#bloch momentum num
+M=3000#beta num
 dt=T/Q
 L=3*N
-
-tValsAll=[dt*q for q in range(0,Q)]
+bandNum=1
+tValsAll=[dt*q for q in range(1,Q+1)]
 betaValsAll=[2*np.pi/M*m for m in range(0,M)]
 blochValsAll=[2*np.pi/N*n for n in range(0,N+1)]
 
@@ -133,7 +133,7 @@ for UTmp in UByPhi:
     phaseByPhi.append(sortedPhases)
     eigVecsByPhi.append(sortedVecs)
 
-bandNum=0
+
 eigVecsFromBand=[]
 for vecs in eigVecsByPhi:
     eigVecsFromBand.append(vecs[bandNum])
@@ -148,7 +148,7 @@ for j in range(0,N):
     eigVecsFromBand[j]*=np.exp(-1j*j*thetaTot/(N+1))
 
 ####################
-wsInit = np.zeros(3 * N, dtype=complex)
+
 subLat0=[]
 subLat1=[]
 subLat2=[]
@@ -228,7 +228,7 @@ for vecTmp in datsAll:
 
 plt.figure()
 plt.plot(np.arange(0,M+1),pumpings,color="black")
-plt.title("$T_{1}/T_{2}=$"+str(a)+"/"+str(b)+", pumping = "+str(dis))
+plt.title("$T_{1}/T_{2}=$"+str(a)+"/"+str(b)+", pumping = "+str(dis)+", band"+str(bandNum))
 plt.xlabel("$t/T$")
-plt.savefig("T1"+str(T1)+"T2"+str(T2)+"displacement.png")
+plt.savefig("T1"+str(T1)+"T2"+str(T2)+"betaNum"+str(M)+"blochNum"+str(N)+"displacement.png")
 plt.close()
