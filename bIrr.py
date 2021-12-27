@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 from datetime import datetime
-#script for pumping
+#script for pumping with irrational b
 
 #consts
 alpha=1/3
@@ -10,15 +10,15 @@ T1=2
 J=2.5
 V=2.5
 Omega=2*np.pi/T1
-
-b=1
+irrRatio=1
+b=1*irrRatio
 a=3
 T2=T1*b/a
 
 omegaF=2*np.pi/T2
 
 T=T2*a#total small time
-
+nM=1# number of irrational periods
 Q=1000#small time interval number
 N=128#bloch momentum num
 M=1000#beta num
@@ -28,7 +28,6 @@ bandNum=0
 tValsAll=[dt*q for q in range(1,Q+1)]
 betaValsAll=[2*np.pi/M*m for m in range(0,M)]
 blochValsAll=[2*np.pi/N*n for n in range(0,N+1)]
-
 
 def A1(phi):
     """
@@ -88,7 +87,6 @@ def A6(phi):
          np.exp(-1j*2/3*phi),
          np.exp(-1j*3/3*phi)]
     return np.diag(dat)
-
 
 def OneUq(phi,beta,t):
     """
@@ -174,9 +172,6 @@ for j in range(0,N):
     wsInit[3*j+2]=realSubLat2[j]
 wsInit /= np.linalg.norm(wsInit,ord=2)
 datsAll.append(wsInit)
-initDat=np.array([wsInit,np.abs(wsInit)]).T
-df=pd.DataFrame(initDat,columns=["psi0","abs"])
-df.to_csv("ws0.csv")
 tEigEnd = datetime.now()
 print("time for initialization: ", tEigEnd - tStart)
 
@@ -188,26 +183,26 @@ plt.plot(locations,np.abs(wsInit))
 plt.savefig("init.png")
 plt.close()
 
-
 kTotal=[2*np.pi/(3*N)*j for j in range(0,3*N)]
 state=wsInit
 ini_center = np.sum(locations * (np.abs(wsInit) ** 2))
 tPumpStart=datetime.now()
-for m in range(0,M):
-    betaVal=betaValsAll[m]
 
-    for q in range(0,Q):
-        tmp1=np.exp(-1j*(V*dt*np.cos(2*np.pi*alpha*locations-betaVal)*np.cos(Omega*tValsAll[q])+omegaF*locations*dt))*state
-        tmp2=np.fft.ifft(tmp1,norm="ortho")
-        tmp3=np.exp(-1j*J*dt*np.cos(kTotal))*tmp2
-        state=np.fft.fft(tmp3,norm="ortho")
-    datsAll.append(state)
+for nTmp in range(0,nM):
+    for m in range(0,M):
+        betaVal=betaValsAll[m]
+
+        for q in range(0,Q):
+            tmp1=np.exp(-1j*(V*dt*np.cos(2*np.pi*alpha*locations-betaVal)*np.cos(Omega*tValsAll[q])+omegaF*locations*dt))*state
+            tmp2=np.fft.ifft(tmp1,norm="ortho")
+            tmp3=np.exp(-1j*J*dt*np.cos(kTotal))*tmp2
+            state=np.fft.fft(tmp3,norm="ortho")
+        datsAll.append(state)
 
 
 tPumpEnd=datetime.now()
 print("evolution time: ",tPumpEnd-tPumpStart)
 f_center = np.sum(locations* (np.abs(state)**2))
-
 
 dis = (f_center - ini_center)/3.0
 
@@ -220,18 +215,20 @@ print(dis)
 plt.figure()
 
 plt.plot(locations, np.abs(state), 'r')
-plt.savefig("last.png")
+plt.savefig("lastIrr.png")
 plt.close()
-###############plot displacements
+
+dataAtnM=[datsAll[mTmp*M] for mTmp in range(0,nM+1)]
 
 pumpings=[]
-for vecTmp in datsAll:
-    displacementTmp=(np.sum(locations* (np.abs(vecTmp)**2))-ini_center)/3.0
+for vecTmp in dataAtnM:
+    displacementTmp = (np.sum(locations * (np.abs(vecTmp) ** 2)) - ini_center) / 3.0
     pumpings.append(displacementTmp)
 
+
 plt.figure()
-plt.plot(np.arange(0,M+1),pumpings,color="black")
+plt.plot(range(0,nM+1),pumpings,color="black")
 plt.title("$T_{1}/T_{2}=$"+str(a)+"/"+str(b)+", pumping = "+str(dis)+", band"+str(bandNum))
-plt.xlabel("$t/T$")
-plt.savefig("IrrationalT1"+str(T1)+"T2"+str(T2)+"betaNum"+str(M)+"blochNum"+str(N)+"displacement.png")
+plt.xlabel("$n$")
+plt.savefig("Irrational_b, nM="+str(nM)+", T1"+str(T1)+"T2"+str(T2)+"betaNum"+str(M)+"blochNum"+str(N)+"displacement.png")
 plt.close()
