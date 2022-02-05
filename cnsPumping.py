@@ -12,16 +12,16 @@ V=2.5
 Omega=2*np.pi/T1
 
 b=1
-a=3
+a=1
 T2=T1*b/a
 
-omegaF=2*np.pi/T2
+omegaF=0*2*np.pi/T2
 
 T=T2*a#total small time
 
 Q=1000#small time interval number
-N=128#bloch momentum num
-M=1000#beta num
+N=1000#bloch momentum num
+M=12000#beta num
 dt=T/Q
 L=3*N
 bandNum=0
@@ -174,15 +174,13 @@ for j in range(0,N):
     wsInit[3*j+2]=realSubLat2[j]
 wsInit /= np.linalg.norm(wsInit,ord=2)
 datsAll.append(wsInit)
-initDat=np.array([wsInit,np.abs(wsInit)]).T
-df=pd.DataFrame(initDat,columns=["psi0","abs"])
-df.to_csv("ws0.csv")
+
 tEigEnd = datetime.now()
 print("time for initialization: ", tEigEnd - tStart)
 
 q=3
 locations = np.append(np.arange(1,L/2+q +1), np.arange(1+q-L/2,1))
-# locations=np.arange(1,3*N+1)
+# locations=np.arange(1,3*N+1)c
 plt.figure()
 plt.plot(locations,np.abs(wsInit))
 plt.savefig("init.png")
@@ -233,5 +231,10 @@ plt.figure()
 plt.plot(np.arange(0,M+1),pumpings,color="black")
 plt.title("$T_{1}/T_{2}=$"+str(a)+"/"+str(b)+", pumping = "+str(dis)+", band"+str(bandNum))
 plt.xlabel("$t/T$")
-plt.savefig("IrrationalT1"+str(T1)+"T2"+str(T2)+"betaNum"+str(M)+"blochNum"+str(N)+"displacement.png")
+plt.savefig("T1OverT2"+str(a)+"Over"+str(b)+"band"+str(bandNum)+"betaNum"+str(M)+"blochNum"+str(N)+"displacement.png")
 plt.close()
+
+dataPdFrame=np.array([np.arange(0,M+1),pumpings]).T
+dfPumping=pd.DataFrame(dataPdFrame,columns=["TNum","displacement"])
+dfPumping.to_csv("dataFrameT1"+str(T1)+"a"+str(a)+"b"+str(b)+".csv")
+
