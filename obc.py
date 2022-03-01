@@ -7,17 +7,17 @@ from datetime import datetime
 
 #consts
 alpha=1/3
-T1=2
-J=8
-V=8
+T1=4
+J=2.5
+V=2.5
 Omega=2*np.pi/T1
 
 #
-# a=3
-# b=1
-# T2=T1*b/a
-omegaF=0#2*np.pi/T2
-T=T1#T1*b#total small time
+a=5
+b=2
+T2=T1*b/a
+omegaF=2*np.pi/T2
+T=T1*b#total small time
 
 Q=100#small time interval number
 N=120#lattice num
@@ -167,13 +167,27 @@ for itemTmp in retAll:
             pltBetaMiddle.append(beta/np.pi)
             pltMidPhase.append(midPairTmp[0]/np.pi)
 
-plt.figure()
-plt.scatter(pltBetaLeft,pltLeftPhase,color="red",marker=".",s=30,label="left")
-plt.scatter(pltBetaRight,pltRightPhase,color="green",marker=".",s=30,label="right")
-plt.scatter(pltBetaMiddle,pltMidPhase,color="blue",marker=".",s=30,label="bulk")
-plt.xlabel("$\\beta/\pi$")
-plt.ylabel("quasienergy/\pi")
-plt.savefig("tmp.png")
+
+
+sVal=2
+fig,ax=plt.subplots()
+ftSize=16
+ax.set_title("$T_{1}=$"+str(T1)
+          # +", $\omega_{F}=0$"
+         + ", $T_{1}/T_{2}=$"+str(a)+"/"+str(b)
+             ,fontsize=ftSize
+          )
+ax.scatter(pltBetaLeft,pltLeftPhase,color="magenta",marker=".",s=sVal,label="left")
+ax.scatter(pltBetaRight,pltRightPhase,color="cyan",marker=".",s=sVal,label="right")
+ax.scatter(pltBetaMiddle,pltMidPhase,color="black",marker=".",s=sVal,label="bulk")
+
+ax.set_xlabel("$\\beta/\pi$",fontsize=ftSize,labelpad=0.5)
+ax.set_ylabel("eigenphase$/\pi$",fontsize=ftSize,labelpad=0.5)
+plt.legend()
+plt.savefig("obcT1"+str(T1)
+            # +"omegaF0"
+            +"a"+str(a)+"b"+str(b)
+            +".png")
 
 
 
