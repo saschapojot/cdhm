@@ -2,24 +2,26 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 from datetime import datetime
+from multiprocessing import Pool
 #script for pumping of gaussian wavepacket
 
 #consts
 alpha=1/3
-T1=2
+T1=4
 J=2.5
 V=2.5
 Omega=2*np.pi/T1
 
-b=1
+
 a=3
+b=1
 T2=T1*b/a
 omegaF=2*np.pi/T2
 T=T2*a#total small time
 
 Q=1000#small time interval number
-N=1024#bloch momentum num
-M=6000#beta num
+N=512#bloch momentum num
+M=1000#beta num
 dt=T/Q
 L=3*N
 bandNum=0
@@ -27,7 +29,7 @@ tValsAll=[dt*q for q in range(1,Q+1)]
 betaValsAll=[2*np.pi/M*m for m in range(0,M)]
 blochValsAll=[2*np.pi/N*n for n in range(0,N+1)]
 
-
+threadNum=24
 
 def A1(phi):
     """
@@ -116,12 +118,19 @@ def U(phi,beta):
 tStart=datetime.now()
 
 betaStart=betaValsAll[0]
+def UWrapper(phiTmp):
+    return [phiTmp,U(phiTmp,betaStart)]
 
+pool0=Pool(threadNum)
+ret0=pool0.map(UWrapper,blochValsAll)
+
+ret0=sorted(ret0,key=lambda  elem: elem[0])
 UByPhi=[]
-for phiTmp in blochValsAll:
-    UByPhi.append(U(phiTmp,betaStart))
+# for phiTmp in blochValsAll:
+#     UByPhi.append(U(phiTmp,betaStart))
 
-
+for elem in ret0:
+    UByPhi.append(elem[1])
 phaseByPhi=[]
 eigVecsByPhi=[]
 
@@ -150,39 +159,10 @@ for j in range(0,N):
 
 ####################
 
-subLat0=[]
-subLat1=[]
-subLat2=[]
 
-
-for j in range(0,N):
-    vec=eigVecsFromBand[j]
-    subLat0.append(vec[0])
-    subLat1.append(vec[1])
-    subLat2.append(vec[2])
-wsInit = np.zeros(3 * N, dtype=complex)#init vec
 datsAll=[]# vecs of evolution
-#####ifft
-# realSubLat0=np.fft.ifft(subLat0,norm="ortho")
-# realSubLat1=np.fft.ifft(subLat1,norm="ortho")
-# realSubLat2=np.fft.ifft(subLat2,norm="ortho")
+wsInit=np.zeros(3*N,dtype=complex)
 
-#####ifft handwritten 1
-# realSubLat0=[]
-# realSubLat1=[]
-# realSubLat2=[]
-# center=0
-# sgm=2
-# for m in range(0,N):
-#     a0m=1/np.sqrt(N)*sum([subLat0[j]*np.exp(1j*(m-center)*blochValsAll[j]) for j in range(0,N)])
-#     realSubLat0.append(a0m)
-#
-#     a1m=1/np.sqrt(N)*sum([subLat1[j]*np.exp(1j*(m-center)*blochValsAll[j]) for j in range(0,N)])
-#     realSubLat1.append(a1m)
-#
-#     a2m=1/np.sqrt(N)*sum([subLat2[j]*np.exp(1j*(m-center)*blochValsAll[j]) for j in range(0,N)])
-#     realSubLat2.append(a2m)
-#################
 
 #####ifft handwritten2
 # # real space basis
@@ -193,9 +173,10 @@ for n in range(0, N):
     realBasis.append(basisTmp)
 center=0
 sgm=2
+R=0
 for j in range(0,N):
     for n in range(0,N):
-        wsInit+=np.kron(realBasis[n],eigVecsFromBand[j])*np.exp(1j*n*blochValsAll[j])*np.exp(-sgm**2*blochValsAll[j]**2)
+        wsInit+=np.kron(realBasis[n],eigVecsFromBand[j])*np.exp(1j*(n-R)*blochValsAll[j])*np.exp(-sgm**2*blochValsAll[j]**2)
 
 ##################
 # for j in range(0,N):
@@ -204,11 +185,9 @@ for j in range(0,N):
 #     wsInit[3*j+2]=realSubLat2[j]
 wsInit /= np.linalg.norm(wsInit,ord=2)
 datsAll.append(wsInit)
-initDat=np.array([wsInit,np.abs(wsInit)]).T
-df=pd.DataFrame(initDat,columns=["psi0","abs"])
-df.to_csv("GaussianWs0.csv")
+
 tEigEnd = datetime.now()
-print("time for initialization: ", tEigEnd - tStart)
+
 
 q=3
 locations = np.append(np.arange(1,L/2+q +1), np.arange(1+q-L/2,1))
@@ -218,7 +197,7 @@ plt.plot(locations,np.abs(wsInit))
 plt.savefig("GaussianInit.png")
 plt.close()
 
-
+print("time for initialization: ", tEigEnd - tStart)
 kTotal=[2*np.pi/(3*N)*j for j in range(0,3*N)]
 state=wsInit
 ini_center = np.sum(locations * (np.abs(wsInit) ** 2))
