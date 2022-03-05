@@ -3,11 +3,12 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from datetime import datetime
 from multiprocessing import Pool
+from pathlib import Path
 #script for pumping of gaussian wavepacket
 
 #consts
 alpha=1/3
-T1=4
+T1=2
 J=2.5
 V=2.5
 Omega=2*np.pi/T1
@@ -24,7 +25,7 @@ N=512#bloch momentum num
 M=1000#beta num
 dt=T/Q
 L=3*N
-bandNum=0
+bandNum=2
 tValsAll=[dt*q for q in range(1,Q+1)]
 betaValsAll=[2*np.pi/M*m for m in range(0,M)]
 blochValsAll=[2*np.pi/N*n for n in range(0,N+1)]
@@ -155,7 +156,7 @@ for j in range(0,N):
     eigVecsFromBand[j+1]*=np.exp(-1j*dThetaTmp)
 thetaTot=np.angle(np.vdot(eigVecsFromBand[0],eigVecsFromBand[-1]))
 for j in range(0,N):
-    eigVecsFromBand[j]*=np.exp(-1j*j*thetaTot/(N+1))
+    eigVecsFromBand[j]*=np.exp(-1j*j*thetaTot/(N))
 
 ####################
 
@@ -187,14 +188,15 @@ wsInit /= np.linalg.norm(wsInit,ord=2)
 datsAll.append(wsInit)
 
 tEigEnd = datetime.now()
-
+outDirPrefix="./gaussian/"
+Path(outDirPrefix).mkdir(parents=True, exist_ok=True)
 
 q=3
 locations = np.append(np.arange(1,L/2+q +1), np.arange(1+q-L/2,1))
 # locations=np.arange(1,3*N+1)
 plt.figure()
 plt.plot(locations,np.abs(wsInit))
-plt.savefig("GaussianInit.png")
+plt.savefig(outDirPrefix+"GaussianInit.png")
 plt.close()
 
 print("time for initialization: ", tEigEnd - tStart)
@@ -229,7 +231,7 @@ print(dis)
 plt.figure()
 
 plt.plot(locations, np.abs(state), 'r')
-plt.savefig("GaussainLast.png")
+plt.savefig(outDirPrefix+"GaussainLast.png")
 plt.close()
 ###############plot displacements
 
@@ -242,6 +244,11 @@ plt.figure()
 plt.plot(np.arange(0,M+1),pumpings,color="black")
 plt.title("$T_{1}/T_{2}=$"+str(a)+"/"+str(b)+", pumping = "+str(dis)+", band"+str(bandNum))
 plt.xlabel("$t/T$")
-plt.savefig("band"+str(bandNum)+"GaussianT1"+str(T1)+"T2"+str(T2)+"betaNum"+str(M)+"blochNum"+str(N)+"displacement.png")
+plt.savefig(outDirPrefix+"band"+str(bandNum)+"Gaussiana"+str(a)+"b"+str(b)+"betaNum"+str(M)+"blochNum"+str(N)+"displacement.png")
 plt.close()
 
+outData=np.array([range(0,M+1),pumpings]).T
+
+outDtFrm=pd.DataFrame(data=outData,columns=["t","pumping"])
+
+outDtFrm.to_csv(outDirPrefix+"gaussianBand"+str(bandNum)+".csv")

@@ -2,33 +2,35 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 from datetime import datetime
+from pathlib import Path
 #script for pumping
 
 #consts
 alpha=1/3
-T1=2
+T1=4
 J=2.5
 V=2.5
 Omega=2*np.pi/T1
+a=8
+b=11
 
-b=1
-a=1
 T2=T1*b/a
 
-omegaF=0*2*np.pi/T2
+omegaF=2*np.pi/T2
 
 T=T2*a#total small time
 
 Q=1000#small time interval number
-N=1000#bloch momentum num
-M=12000#beta num
+N=2048#bloch momentum num
+M=30000#beta num
 dt=T/Q
 L=3*N
-bandNum=0
+bandNum=1
 tValsAll=[dt*q for q in range(1,Q+1)]
 betaValsAll=[2*np.pi/M*m for m in range(0,M)]
 blochValsAll=[2*np.pi/N*n for n in range(0,N+1)]
-
+q=3
+locations = np.append(np.arange(1,L/2+q +1), np.arange(1+q-L/2,1))
 
 def A1(phi):
     """
@@ -147,7 +149,7 @@ for j in range(0,N):
     eigVecsFromBand[j+1]*=np.exp(-1j*dThetaTmp)
 thetaTot=np.angle(np.vdot(eigVecsFromBand[0],eigVecsFromBand[-1]))
 for j in range(0,N):
-    eigVecsFromBand[j]*=np.exp(-1j*j*thetaTot/(N+1))
+    eigVecsFromBand[j]*=np.exp(-1j*j*thetaTot/(N))
 
 ####################
 
@@ -172,14 +174,32 @@ for j in range(0,N):
     wsInit[3*j]=realSubLat0[j]
     wsInit[3*j+1]=realSubLat1[j]
     wsInit[3*j+2]=realSubLat2[j]
+####################################
+# sd0=np.zeros(3*N,dtype=complex)
+# sd1=np.zeros(3*N,dtype=complex)
+# sd2=np.zeros(3*N,dtype=complex)
+# sd0[0]=1
+# sd1[1]=1
+# sd2[2]=1
+# for a in range(0,N):
+#     for m in range(0,3):
+#         for j in range(0,N):
+#             vecTmp=np.zeros(3*N,dtype=complex)
+#             vecTmp[m+3*j]=1
+#             vecTmp*=eigVecsFromBand[a][m]*np.exp(1j*blochValsAll[a]*j)
+#             wsInit+=vecTmp
+
 wsInit /= np.linalg.norm(wsInit,ord=2)
 datsAll.append(wsInit)
-
+plt.figure()
+plt.plot(locations,np.abs(wsInit),color="black")
+plt.savefig("wsInit.png")
+plt.close()
+print("wsInit plotted")
 tEigEnd = datetime.now()
 print("time for initialization: ", tEigEnd - tStart)
 
-q=3
-locations = np.append(np.arange(1,L/2+q +1), np.arange(1+q-L/2,1))
+
 # locations=np.arange(1,3*N+1)c
 plt.figure()
 plt.plot(locations,np.abs(wsInit))
@@ -213,12 +233,12 @@ dis = (f_center - ini_center)/3.0
 
 print(dis)
 
-
-
+outDir="./dataFrameT1"+str(T1)+"a"+str(a)+"b"+str(b)+"/"
+Path(outDir).mkdir(parents=True,exist_ok=True)
 plt.figure()
 
 plt.plot(locations, np.abs(state), 'r')
-plt.savefig("last.png")
+plt.savefig(outDir+"last.png")
 plt.close()
 ###############plot displacements
 
@@ -227,14 +247,16 @@ for vecTmp in datsAll:
     displacementTmp=(np.sum(locations* (np.abs(vecTmp)**2))-ini_center)/3.0
     pumpings.append(displacementTmp)
 
+
 plt.figure()
 plt.plot(np.arange(0,M+1),pumpings,color="black")
-plt.title("$T_{1}/T_{2}=$"+str(a)+"/"+str(b)+", pumping = "+str(dis)+", band"+str(bandNum))
+plt.title("$T_{1}=$"+str(T1)+", $T_{1}/T_{2}=$"+str(a)+"/"+str(b)+", pumping = "+str(dis)+", band"+str(bandNum))
 plt.xlabel("$t/T$")
-plt.savefig("T1OverT2"+str(a)+"Over"+str(b)+"band"+str(bandNum)+"betaNum"+str(M)+"blochNum"+str(N)+"displacement.png")
+plt.savefig(outDir+"T1"+str(T1)+"a"+str(a)+"b"+str(b)+"band"+str(bandNum)+"betaNum"+str(M)+"blochNum"+str(N)+"displacement.png")
 plt.close()
 
 dataPdFrame=np.array([np.arange(0,M+1),pumpings]).T
 dfPumping=pd.DataFrame(dataPdFrame,columns=["TNum","displacement"])
-dfPumping.to_csv("dataFrameT1"+str(T1)+"a"+str(a)+"b"+str(b)+".csv")
+
+dfPumping.to_csv(outDir+"dataFrameT1"+str(T1)+"a"+str(a)+"b"+str(b)+"band"+str(bandNum)+".csv", index=False)
 
