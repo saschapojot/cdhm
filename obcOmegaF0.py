@@ -7,16 +7,16 @@ import pandas as pd
 
 #consts
 alpha=1/3
-T1=2
+T1=4
 J=2.5
 V=2.5
 Omega=2*np.pi/T1
 
 #
-a=3
+a=1
 b=1
 T2=T1*b/a
-omegaF=2*np.pi/T2
+omegaF=0#2*np.pi/T2
 T=T1*b#total small time
 
 Q=100#small time interval number
@@ -31,6 +31,8 @@ betaValsAll=[2*np.pi/M*m for m in range(0,M)]
 threadNum=24
 
 def Hr(tq,beta):
+
+
     """
 
     :param tq:
@@ -181,42 +183,7 @@ if len(pltBetaMiddle)<lenMax:
 
 dataOut=np.array([pltBetaLeft,pltLeftPhase,pltBetaRight,pltRightPhase,pltBetaMiddle,pltMidPhase]).T
 dtFrm=pd.DataFrame(data=dataOut,columns=["betaLeft","phasesLeft","betaRight","phasesRight","betaMiddle","phasesMiddle"])
-dtFrm.to_csv("obcT1"+str(T1)+"a"+str(a)+"b"+str(b)+".csv", index=False
+dtFrm.to_csv("obcT1"+str(T1)+"0"+".csv", index=False
              )
-
-# sVal=2
-# # fig,ax=plt.subplots()
-# plt.figure()
-# ftSize=16
-# plt.title("$T_{1}=$"+str(T1)
-#           # +", $\omega_{F}=0$"
-#          + ", $T_{1}/T_{2}=$"+str(a)+"/"+str(b)
-#              ,fontsize=ftSize)
-# # ax.set_title("$T_{1}=$"+str(T1)
-# #           # +", $\omega_{F}=0$"
-# #          + ", $T_{1}/T_{2}=$"+str(a)+"/"+str(b)
-# #              ,fontsize=ftSize
-# #           )
-# plt.scatter(pltBetaLeft,pltLeftPhase,color="magenta",marker=".",s=sVal,label="left")
-# plt.scatter(pltBetaRight,pltRightPhase,color="cyan",marker=".",s=sVal,label="right")
-# plt.scatter(pltBetaMiddle,pltMidPhase,color="black",marker=".",s=sVal,label="bulk")
-#
-# # ax.set_xlabel("$\\beta/\pi$",fontsize=ftSize,labelpad=0.05)
-# plt.xlabel("$\\beta/\pi$",fontsize=ftSize,labelpad=0.05)
-# # ax.tick_params(axis='x', labelsize=ftSize )
-# plt.xticks( fontsize=ftSize )
-# # ax.set_ylabel("eigenphase$/\pi$",fontsize=ftSize,labelpad=0.05)
-# plt.ylabel("eigenphase$/\pi$",fontsize=ftSize,labelpad=0.05)
-# # ax.tick_params(axis='y', labelsize=ftSize )
-# plt.yticks(fontsize=ftSize )
-# plt.legend(loc="best",fontsize=ftSize)
-# plt.savefig("obcT1"+str(T1)
-#             # +"omegaF0"
-#             +"a"+str(a)+"b"+str(b)
-#             +".png")
-#
-#
-#
-#
 
 
