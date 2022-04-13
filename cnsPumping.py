@@ -7,12 +7,12 @@ from pathlib import Path
 
 #consts
 alpha=1/3
-T1=4
+T1=2
 J=2.5
 V=2.5
 Omega=2*np.pi/T1
-a=8
-b=11
+a=3
+b=5
 
 T2=T1*b/a
 
@@ -21,11 +21,11 @@ omegaF=2*np.pi/T2
 T=T2*a#total small time
 
 Q=1000#small time interval number
-N=2048#bloch momentum num
-M=30000#beta num
+N=1024#bloch momentum num
+M=6000#beta num
 dt=T/Q
 L=3*N
-bandNum=1
+bandNum=0
 tValsAll=[dt*q for q in range(1,Q+1)]
 betaValsAll=[2*np.pi/M*m for m in range(0,M)]
 blochValsAll=[2*np.pi/N*n for n in range(0,N+1)]
@@ -215,7 +215,8 @@ for m in range(0,M):
     betaVal=betaValsAll[m]
 
     for q in range(0,Q):
-        tmp1=np.exp(-1j*(V*dt*np.cos(2*np.pi*alpha*locations-betaVal)*np.cos(Omega*tValsAll[q])+omegaF*locations*dt))*state
+        tq=q*dt
+        tmp1=np.exp(-1j*(V*dt*np.cos(2*np.pi*alpha*locations-betaVal)*np.cos(Omega*tq)+omegaF*locations*dt))*state
         tmp2=np.fft.ifft(tmp1,norm="ortho")
         tmp3=np.exp(-1j*J*dt*np.cos(kTotal))*tmp2
         state=np.fft.fft(tmp3,norm="ortho")
@@ -233,12 +234,12 @@ dis = (f_center - ini_center)/3.0
 
 print(dis)
 
-outDir="./dataFrameT1"+str(T1)+"a"+str(a)+"b"+str(b)+"/"
+outDir="./tmp/dataFrameT1"+str(T1)+"a"+str(a)+"b"+str(b)+"/"
 Path(outDir).mkdir(parents=True,exist_ok=True)
 plt.figure()
 
 plt.plot(locations, np.abs(state), 'r')
-plt.savefig(outDir+"last.png")
+plt.savefig(outDir+str(bandNum)+"last.png")
 plt.close()
 ###############plot displacements
 
