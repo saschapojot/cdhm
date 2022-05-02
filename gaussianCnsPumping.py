@@ -22,10 +22,10 @@ T=T2*a#total small time
 
 Q=1000#small time interval number
 N=512#bloch momentum num
-M=1000#beta num
+M=2000#beta num
 dt=T/Q
 L=3*N
-bandNum=2
+bandNum=0
 tValsAll=[dt*q for q in range(1,Q+1)]
 betaValsAll=[2*np.pi/M*m for m in range(0,M)]
 blochValsAll=[2*np.pi/N*n for n in range(0,N+1)]
