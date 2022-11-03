@@ -215,4 +215,4 @@ pdData=pd.DataFrame(data=data,columns=["wannier","gaussian"])
 
 outDir="./thesis/initT1"+str(T1)+"a"+str(a)+"b"+str(b)+"/"
 Path(outDir).mkdir(parents=True,exist_ok=True)
-pdData.to_csv(outDir+"initT1"+str(T1)+"a"+str(a)+"b"+str(b)+".csv")
+pdData.to_csv(outDir+"initT1"+str(T1)+"a"+str(a)+"b"+str(b)+"band"+str(bandNum)+".csv")
