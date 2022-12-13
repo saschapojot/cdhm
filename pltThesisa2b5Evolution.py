@@ -82,7 +82,7 @@ surf12._facecolors2d=surf12._facecolor3d
 surf12._edgecolors2d=surf12._edgecolor3d
 ax1.legend(loc='upper left', bbox_to_anchor=(-0.4, 1.05),fontsize=ftSize)
 ax1.text(x0,y0,z0,"(a)",transform=ax1.transAxes,
-            size=ftSize-2, weight='bold')#numbering of figure
+            size=ftSize-2)#numbering of figure
 
 
 #T140 pumping
@@ -106,7 +106,7 @@ ax2.hlines(y=4,xmin=0, xmax=xMax, linewidth=0.5, color='k',linestyles="--")
 ax2.set_xlim((0,xMax))
 ax2.legend(loc="best",fontsize=ftSize)
 ax2.text(x0,y0,"(b)",transform=ax2.transAxes,
-            size=ftSize-2, weight='bold')
+            size=ftSize-2)
 
 
 #obc
@@ -134,7 +134,7 @@ ax3.set_ylim((-1,1))
 ax3.set_ylabel("quasienergy$/\pi$",fontsize=ftSize,labelpad=0.05)
 ax3.set_yticks([-1,0,1],fontsize=ftSize )
 ax3.text(x0,y0,"(c)",transform=ax3.transAxes,
-            size=ftSize-2, weight='bold')
+            size=ftSize-2)
 lgnd =ax3.legend(loc='upper right', bbox_to_anchor=(1.25, 1.2),fontsize=ftSize)
 for handle in lgnd.legendHandles:
     handle.set_sizes([25.0])
@@ -174,7 +174,7 @@ surf42._edgecolors2d=surf42._edgecolor3d
 ax4.legend(loc='upper left', bbox_to_anchor=(-0.4, 1.05),fontsize=ftSize)
 z1=15.4
 ax4.text(x0,y0,z1,"(d)",transform=ax4.transAxes,
-            size=ftSize-2, weight='bold')#numbering of figure
+            size=ftSize-2)#numbering of figure
 
 
 #T14a2b5 pumping
@@ -198,7 +198,7 @@ ax5.hlines(y=40,xmin=0, xmax=xMax, linewidth=0.5, color='k',linestyles="--")
 ax5.set_xlim((0,xMax))
 ax5.legend(loc="best",fontsize=ftSize)
 ax5.text(x0,y0,"(e)",transform=ax5.transAxes,
-            size=ftSize-2, weight='bold')
+            size=ftSize-2)
 
 #T14a2b5 obc
 sVal=2
@@ -225,7 +225,7 @@ ax6.set_ylim((-1,1))
 ax6.set_ylabel("quasienergy$/\pi$",fontsize=ftSize,labelpad=0.05)
 ax6.set_yticks([-1,0,1],fontsize=ftSize )
 ax6.text(x0,y0,"(f)",transform=ax6.transAxes,
-            size=ftSize-2, weight='bold')
+            size=ftSize-2)
 lgnd =ax6.legend(loc='upper right', bbox_to_anchor=(1.25, 1.2),fontsize=ftSize)
 for handle in lgnd.legendHandles:
     handle.set_sizes([25.0])
@@ -264,7 +264,7 @@ surf72._edgecolors2d=surf72._edgecolor3d
 ax7.legend(loc='upper left', bbox_to_anchor=(-0.4, 1.05),fontsize=ftSize)
 z2=11.3
 ax7.text(x0,y0,z2,"(g)",transform=ax7.transAxes,
-            size=ftSize-2, weight='bold')#numbering of figure
+            size=ftSize-2)#numbering of figure
 
 
 #T14a5b2 pumping
@@ -288,7 +288,7 @@ ax8.hlines(y=4,xmin=0, xmax=xMax, linewidth=0.5, color='k',linestyles="--")
 ax8.set_xlim((0,xMax))
 ax8.legend(loc="best",fontsize=ftSize)
 ax8.text(x0,y0,"(h)",transform=ax8.transAxes,
-            size=ftSize-2, weight='bold')
+            size=ftSize-2)
 
 
 
@@ -316,7 +316,7 @@ ax9.set_ylim((-1,1))
 ax9.set_ylabel("quasienergy$/\pi$",fontsize=ftSize,labelpad=0.05)
 ax9.set_yticks([-1,0,1],fontsize=ftSize )
 ax9.text(x0,y0,"(i)",transform=ax9.transAxes,
-            size=ftSize-2, weight='bold')
+            size=ftSize-2)
 lgnd =ax9.legend(loc='upper right', bbox_to_anchor=(1.25, 1.2),fontsize=ftSize)
 for handle in lgnd.legendHandles:
     handle.set_sizes([25.0])
