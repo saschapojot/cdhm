@@ -85,7 +85,7 @@ ax1.set_xlabel("location",fontsize=ftSize)
 ax1.set_ylabel("amplitude",fontsize=ftSize)
 ax1.set_title("Wannier initial state in real space",fontsize=ftSize)
 ax1.text(x, y, "(a)", transform=ax1.transAxes,
-            size=ftSize-2, weight='bold')
+            size=ftSize-2)
 
 ######plot Gaussian state in real space
 # zeroPosition=np.arange(-150,150)
@@ -105,7 +105,7 @@ ax2.set_xlabel("location",fontsize=ftSize)
 ax2.set_ylabel("amplitude",fontsize=ftSize)
 ax2.set_title("Gaussian initial state in real space",fontsize=ftSize)
 ax2.text(x, y, "(b)", transform=ax2.transAxes,
-            size=ftSize-2, weight='bold')
+            size=ftSize-2)
 
 ######plot Wannier state in momentum space
 wsMomentumAmplitude=realToMomentum2(ws)
@@ -115,7 +115,7 @@ ax3.set_xlabel("quasimomentum$/\pi$",fontsize=ftSize)
 ax3.set_ylabel("amplitude",fontsize=ftSize)
 ax3.set_title("Wannier initial state in momentum space",fontsize=ftSize)
 ax3.text(x, y, "(c)", transform=ax3.transAxes,
-            size=ftSize-2, weight='bold')
+            size=ftSize-2)
 
 ####plot Gaussian state in momentum space
 gsNew=[elem[1] for elem in locationAndAmplitudePairs]
@@ -132,7 +132,7 @@ ax4.set_ylabel("amplitude",fontsize=ftSize)
 ax4.yaxis.set_label_position("right")
 ax4.set_title("Gaussian initial state in momentum space",fontsize=ftSize)
 ax4.text(-0.1, 1.05, "(d)", transform=ax4.transAxes,
-            size=ftSize-2, weight='bold')
+            size=ftSize-2)
 
 
 
