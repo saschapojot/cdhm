@@ -52,7 +52,7 @@ surf12._facecolors2d=surf12._facecolor3d
 surf12._edgecolors2d=surf12._edgecolor3d
 ax1.legend(loc='upper left', bbox_to_anchor=(-0.4, 1.05),fontsize=ftSize)
 ax1.text(x0, y0,z0, "(a)", transform=ax1.transAxes,
-            size=ftSize-2, weight='bold')
+            size=ftSize-2)
 
 
 ##plot (b), pumping of Wannier states
@@ -83,7 +83,7 @@ ax2.hlines(y=4,xmin=0, xmax=xMax, linewidth=0.5, color='k',linestyles="--")
 ax2.set_xlim((0,xMax))
 ax2.legend(loc="best",fontsize=ftSize)
 ax2.text(x0, y0, "(b)", transform=ax2.transAxes,
-            size=ftSize-2, weight='bold')
+            size=ftSize-2)
 ## plot (c), pumping of Gaussian states
 ax3=fig.add_subplot(2,3,3)
 #Gaussian
@@ -111,7 +111,7 @@ ax3.hlines(y=4,xmin=0, xmax=xMax, linewidth=0.5, color='k',linestyles="--")
 ax3.set_xlim((0,xMax))
 ax3.legend(loc="best",fontsize=ftSize)
 ax3.text(x0, y0, "(c)", transform=ax3.transAxes,
-            size=ftSize-2, weight='bold')
+            size=ftSize-2)
 ######functions for plotting evolution in momentum space
 def psi2y(psiVec):
     """
@@ -163,7 +163,7 @@ ax4.set_xlabel("time$/T$",fontsize=ftSize)
 ax4.set_xticks(np.linspace(0,1,3))
 ax4.set_title("Gaussian, band"+str(band0), fontsize=ftSize)
 ax4.text(x0, y0, "(d)", transform=ax4.transAxes,
-            size=ftSize-2, weight='bold')
+            size=ftSize-2)
 ##plot (e), evolution of Gaussian state in momentum space, band1
 ax5=fig.add_subplot(2,3,5)
 band1=1
@@ -179,7 +179,7 @@ ax5.set_xlabel("time$/T$",fontsize=ftSize)
 ax5.set_xticks(np.linspace(0,1,3))
 ax5.set_title("Gaussian, band"+str(band1), fontsize=ftSize)
 ax5.text(x0, y0, "(e)", transform=ax5.transAxes,
-            size=ftSize-2, weight='bold')
+            size=ftSize-2)
 ##plot (f), evolution of Gaussian state in momentum space, band2
 
 ax6=fig.add_subplot(2,3,6)
@@ -196,7 +196,7 @@ ax6.set_xlabel("time$/T$",fontsize=ftSize)
 ax6.set_xticks(np.linspace(0,1,3))
 ax6.set_title("Gaussian, band"+str(band2), fontsize=ftSize)
 ax6.text(x0, y0, "(f)", transform=ax6.transAxes,
-            size=ftSize-2, weight='bold')
+            size=ftSize-2)
 ###################
 plt.savefig(inDir+"evoT1"+str(T1)+"a"+str(a)+"b"+str(b)+".png")
 plt.close()
