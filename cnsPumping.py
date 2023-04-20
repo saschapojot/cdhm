@@ -12,7 +12,7 @@ J=2.5
 V=2.5
 Omega=2*np.pi/T1
 a=3
-b=5
+b=1
 
 T2=T1*b/a
 
@@ -21,8 +21,8 @@ omegaF=2*np.pi/T2
 T=T2*a#total small time
 
 Q=1000#small time interval number
-N=1024#bloch momentum num
-M=6000#beta num
+N=512#bloch momentum num
+M=2000#beta num
 dt=T/Q
 L=3*N
 bandNum=0
@@ -234,7 +234,7 @@ dis = (f_center - ini_center)/3.0
 
 print(dis)
 
-outDir="./tmp/dataFrameT1"+str(T1)+"a"+str(a)+"b"+str(b)+"/"
+outDir="./thesis/dataFrameT1"+str(T1)+"a"+str(a)+"b"+str(b)+"/"
 Path(outDir).mkdir(parents=True,exist_ok=True)
 plt.figure()
 
@@ -261,3 +261,6 @@ dfPumping=pd.DataFrame(dataPdFrame,columns=["TNum","displacement"])
 
 dfPumping.to_csv(outDir+"dataFrameT1"+str(T1)+"a"+str(a)+"b"+str(b)+"band"+str(bandNum)+".csv", index=False)
 
+outPsidata=np.array(datsAll)
+pdPsi=pd.DataFrame(data=outPsidata)
+pdPsi.to_csv(outDir+"a"+str(a)+"b"+str(b)+"band"+str(bandNum)+"psiAll.csv",index=False)

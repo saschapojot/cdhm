@@ -1,8 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
-
+from pathlib import Path
 from datetime import datetime
-
+import pandas as pd
 #script for chern number and band
 #consts
 alpha=1/3
@@ -11,15 +11,16 @@ J=2.5
 V=2.5
 Omega=2*np.pi/T1
 
-b=4
-a=1
+
+a=3
+b=1
 T2=T1*b/a
 omegaF=2*np.pi/T2
-T=T2*a#total small time
+T=T1*b#total small time
 
 Q=100#small time interval number
-N=40#bloch momentum num
-M=40#beta num
+N=50#bloch momentum num
+M=50#beta num
 
 
 dt=T/Q
@@ -165,7 +166,7 @@ print(cns)
 tEnd=datetime.now()
 print("calculation time:",tEnd-tStart)
 #########################take one beta
-mval=int(M*1/2)
+mval=int(M/2)%M
 oneBeta=[]
 onePhase0=[]
 onePhase1=[]
@@ -185,6 +186,7 @@ plt.xlabel("k")
 plt.ylim(-1,1)
 # plt.title("$\\beta=$"+str(betaValsAll[mval]))
 plt.savefig("tmp1.png")
+
 plt.close()
 ###
 ######################################
@@ -202,31 +204,48 @@ for m in range(0,M):#index of beta
         pltPhase1.append(phaseByBetaByPhi[m][n][1] / np.pi)
         pltPhase2.append(phaseByBetaByPhi[m][n][2] / np.pi)
 
-fig = plt.figure(figsize=(20,20))
-ax = fig.gca(projection='3d')
+fig = plt.figure()
+ftSize=16
+
+ax = fig.add_subplot(projection='3d')
 surf0 = ax.plot_trisurf(pltBt, pltPhi, pltPhase0, linewidth=0.1, color="blue",label="band0: "+str(int(round(cns[0]))))
 surf1 = ax.plot_trisurf(pltBt, pltPhi, pltPhase1, linewidth=0.1, color="green",label="band1: "+str(int(round(cns[1]))))
 surf2 = ax.plot_trisurf(pltBt, pltPhi, pltPhase2, linewidth=0.1, color="red",label="band2: "+str(int(round(cns[2]))))
-ax.set_xlabel("$\\beta/\pi$")
-ax.set_ylabel("$\phi/\pi$")
-ax.set_zlabel("eigenphase$/\pi$")
-plt.title("$T_{1}/T_{2}=$"+str(a)+"/"+str(b))
-surf0._facecolors2d=surf0._facecolors3d
-surf0._edgecolors2d=surf0._edgecolors3d
-surf1._facecolors2d=surf1._facecolors3d
-surf1._edgecolors2d=surf1._edgecolors3d
-surf2._facecolors2d=surf2._facecolors3d
-surf2._edgecolors2d=surf2._edgecolors3d
-plt.legend()
-plt.savefig("tmp.png")
+ax.set_xlabel("$\\beta/\pi$",fontsize=ftSize,labelpad=10)
+ax.tick_params(axis='x', labelsize=ftSize )
+ax.set_ylabel("$\phi/\pi$",fontsize=ftSize,labelpad=10)
+ax.set_zlabel("eigenphase$/\pi$",fontsize=ftSize,labelpad=10)
+# ax.tick_params(axis="z",which="major",pad=0)
+ax.tick_params(axis='y', labelsize=ftSize )
+ax.tick_params(axis='z', labelsize=ftSize )
+
+plt.title("$T_{1}=$"+str(T1)
+          # +", $\omega_{F}=0$"
+          + ", $T_{1}/T_{2}=$"+str(a)+"/"+str(b)
+          ,fontsize=ftSize)
+surf0._facecolors2d=surf0._facecolor3d
+surf0._edgecolors2d=surf0._edgecolor3d
+surf1._facecolors2d=surf1._facecolor3d
+surf1._edgecolors2d=surf1._edgecolor3d
+surf2._facecolors2d=surf2._facecolor3d
+surf2._edgecolors2d=surf2._edgecolor3d
+ax.legend(loc='upper left', bbox_to_anchor=(-0.4, 1.05),fontsize=ftSize)
+ax.text(0.5,-2.45,1.1,"(c)",fontsize=15)#numbering of figure
+dirPrefix="./dataFrameT1"+str(T1)+"a"+str(a)+"b"+str(b)+"/"
+Path(dirPrefix).mkdir(parents=True,exist_ok=True)
+plt.savefig(dirPrefix+"spectrumT1"+str(T1)
+             # +"0"
+            +"a"+str(a)+"b"+str(b)
+            +".pdf")
+# plt.show()
 plt.close()
 #3d scatter
 
 
-fig=plt.figure()
-ax = fig.add_subplot(111,projection='3d')
-sct0=ax.scatter(pltBt, pltPhi, pltPhase0,marker="." ,c="blue",label="band0: "+str(int(round(cns[0]))))
-sct1=ax.scatter(pltBt, pltPhi, pltPhase1,marker="." ,c="green",label="band1: "+str(int(round(cns[1]))))
-sct2=ax.scatter(pltBt, pltPhi, pltPhase2,marker="." ,c="red",label="band2: "+str(int(round(cns[2]))))
-plt.legend()
-plt.savefig("scatterTmp.png")
+# fig=plt.figure()
+# ax = fig.add_subplot(111,projection='3d')
+# sct0=ax.scatter(pltBt, pltPhi, pltPhase0,marker="." ,c="blue",label="band0: "+str(int(round(cns[0]))))
+# sct1=ax.scatter(pltBt, pltPhi, pltPhase1,marker="." ,c="green",label="band1: "+str(int(round(cns[1]))))
+# sct2=ax.scatter(pltBt, pltPhi, pltPhase2,marker="." ,c="red",label="band2: "+str(int(round(cns[2]))))
+#
+# plt.savefig("scatterTmp.png")

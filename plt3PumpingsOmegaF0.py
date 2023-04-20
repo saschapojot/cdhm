@@ -5,8 +5,7 @@ import numpy as np
 
 
 T1=4
-a=8
-b=11
+
 
 outDir="./dataFrameT1"+str(T1)+"0"+"/"#+"0/"#+"a"+str(a)+"b"+str(b)+"/"
 
@@ -43,8 +42,9 @@ plt.hlines(y=-8, xmin=0, xmax=xMax, linewidth=0.5, color='k',linestyles="--")
 plt.hlines(y=4,xmin=0, xmax=xMax, linewidth=0.5, color='k',linestyles="--")
 plt.xlim((0,xMax))
 plt.legend(loc="best",fontsize=ftSize)
+plt.text(-55,5,"(b)",fontsize=15)
 plt.savefig(outDir+"T1"+str(T1)
            +"0"
             # +"a"+str(a)+"b"+str(b)
-            +".png"
+            +".pdf"
             )

@@ -204,7 +204,7 @@ def calcChernNumberAndPlot(dataPack1,dataPack2):
     jTmp=max(dataPack1.a,dataPack1.b)
     if iTmp==jTmp:
         pairNum=1
-    outDir="./T1"+str(T1)+"quotients/"+str(pairNum)+"/pair"+str(iTmp)+"and"+str(jTmp)+"("+str(pairNum)+")/"
+    outDir="./T1"+str(T1)+"ratios/"+str(pairNum)+"/pair"+str(iTmp)+"and"+str(jTmp)+"("+str(pairNum)+")/"
     Path(outDir).mkdir(parents=True, exist_ok=True)
     ##data serialization for 1
     plt1Bt = []
