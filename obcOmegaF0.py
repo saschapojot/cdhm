@@ -4,8 +4,10 @@ import matplotlib.pyplot as plt
 from multiprocessing import Pool
 from datetime import datetime
 import pandas as pd
-
+from pathlib import Path
+#this script computes obc spectrum for omegaF=0
 #consts
+#tunable: T1, a, b
 alpha=1/3
 T1=4
 J=2.5
@@ -15,16 +17,16 @@ Omega=2*np.pi/T1
 #
 a=1
 b=1
-T2=T1*b/a
+# T2=T1*b/a
 omegaF=0#2*np.pi/T2
 T=T1*b#total small time
 
 Q=100#small time interval number
-N=120#lattice num
-M=500#beta num
+N=120#lattice number
+M=500#beta number
 dt=T/Q
-weight=0.6
-localLength=int(N*0.15)
+weight=0.6#criterion of weight of wavefunction on the edge
+localLength=int(N*0.15)#criterion of length of wavefunction on the edge
 tValsAll=[dt*q for q in range(1,Q+1)]
 betaValsAll=[2*np.pi/M*m for m in range(0,M)]
 
@@ -37,7 +39,7 @@ def Hr(tq,beta):
 
     :param tq:
     :param beta:
-    :return:
+    :return: rotated Hamiltonian
     """
     retMat=np.zeros((N,N),dtype=complex)
     for m in range(0,N-1):
@@ -103,8 +105,8 @@ def selectEdgeStates(vec):
     rightVec=vec[-localLength:]
 
     normVec=np.linalg.norm(vec,ord=2)
-    normLeft=np.linalg.norm(leftVec,ord=2)
-    normRight=np.linalg.norm(rightVec,ord=2)
+    normLeft=np.linalg.norm(leftVec,ord=2)#weight on left edge
+    normRight=np.linalg.norm(rightVec,ord=2)#weight on right edge
 
     wtLeft=normLeft/normVec
     wtRight=normRight/normVec
@@ -180,10 +182,12 @@ if len(pltBetaRight)<lenMax:
 if len(pltBetaMiddle)<lenMax:
     pltBetaMiddle.extend([np.nan]*(lenMax-len(pltBetaMiddle)))
     pltMidPhase.extend([np.nan]*(lenMax-len(pltMidPhase)))
-
+#csv of obc spectrum values
+outDir="./dataFrameT1"+str(T1)+"a"+str(a)+"b"+str(b)+"/"
+Path(outDir).mkdir(parents=True,exist_ok=True)
 dataOut=np.array([pltBetaLeft,pltLeftPhase,pltBetaRight,pltRightPhase,pltBetaMiddle,pltMidPhase]).T
 dtFrm=pd.DataFrame(data=dataOut,columns=["betaLeft","phasesLeft","betaRight","phasesRight","betaMiddle","phasesMiddle"])
-dtFrm.to_csv("obcT1"+str(T1)+"0"+".csv", index=False
+dtFrm.to_csv(outDir+"obcT1"+str(T1)+"0"+".csv", index=False
              )
 
 

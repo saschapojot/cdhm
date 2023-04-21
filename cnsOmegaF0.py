@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-
+from pathlib import Path
 from datetime import datetime
 
 #script for chern number and band
@@ -19,8 +19,8 @@ omegaF=0#2*np.pi/T2
 T=T1*b#total small time
 
 Q=100#small time interval number
-N=50#bloch momentum num
-M=50#beta num
+N=50#bloch momentum number
+M=50#beta number
 
 
 dt=T/Q
@@ -124,8 +124,8 @@ for betaTmp in betaValsALl:
     UByBetaByPhi.append(UByPhi)
 
 
-phaseByBetaByPhi=[]#eigenphases indexed first by beta, then by phi, finally ascending order
-eigVecsBybetaByPhi=[]#eigenvectors indexed first by beta, then by k, finally sorted by eigenphases
+phaseByBetaByPhi=[]#quasienergies indexed first by beta, then by phi, finally ascending order
+eigVecsBybetaByPhi=[]#eigenvectors indexed first by beta, then by k, finally sorted by quasienergies
 
 for UByPhiList in UByBetaByPhi:
     phaseByPhi=[]
@@ -206,17 +206,19 @@ for m in range(0,M):#index of beta
 
 fig = plt.figure()
 ftSize=16
-ax = fig.gca(projection='3d')
+
+ax = fig.add_subplot(projection='3d')
 surf0 = ax.plot_trisurf(pltBt, pltPhi, pltPhase0, linewidth=0.1, color="blue",label="band0: "+str(int(round(cns[0]))))
 surf1 = ax.plot_trisurf(pltBt, pltPhi, pltPhase1, linewidth=0.1, color="green",label="band1: "+str(int(round(cns[1]))))
 surf2 = ax.plot_trisurf(pltBt, pltPhi, pltPhase2, linewidth=0.1, color="red",label="band2: "+str(int(round(cns[2]))))
 ax.set_xlabel("$\\beta/\pi$",fontsize=ftSize,labelpad=10)
 ax.tick_params(axis='x', labelsize=ftSize )
 ax.set_ylabel("$\phi/\pi$",fontsize=ftSize,labelpad=10)
-ax.set_zlabel("eigenphase$/\pi$",fontsize=ftSize,labelpad=10)
+ax.set_zlabel("eigenergy$/\pi$",fontsize=ftSize,labelpad=10)
 # ax.tick_params(axis="z",which="major",pad=0)
 ax.tick_params(axis='y', labelsize=ftSize )
 ax.tick_params(axis='z', labelsize=ftSize )
+ax.text(1,-3.4,2.55,"(a)",fontsize=15)
 plt.title("$T_{1}=$"+str(T1)
           +", $\omega_{F}=0$"
           # + ", $T_{1}/T_{2}=$"+str(a)+"/"+str(b)
@@ -229,10 +231,11 @@ surf2._facecolors2d=surf2._facecolor3d
 surf2._edgecolors2d=surf2._edgecolor3d
 ax.legend(loc='upper left', bbox_to_anchor=(-0.4, 1.05),fontsize=ftSize)
 dirPrefix="./dataFrameT1"+str(T1)+"0"+"/"
+Path(dirPrefix).mkdir(parents=True,exist_ok=True)
 plt.savefig(dirPrefix+"spectrumT1"+str(T1)
              +"0"
             # +"a"+str(a)+"b"+str(b)
-            +".png")
+            +".pdf")
 # plt.show()
 plt.close()
 #3d scatter

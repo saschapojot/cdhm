@@ -1,11 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
-
+#this script plots obc spectrum
 
 T1=4
-a=2
-b=5
+a=8
+b=11
 
 
 dirPrefix="./dataFrameT1"+str(T1)+"a"+str(a)+"b"+str(b)+"/"
@@ -31,7 +31,11 @@ betaMiddleData=[beta for beta in betaMiddle if ~np.isnan(beta)]
 
 phasesMiddle=inTab["phasesMiddle"]
 phasesMiddleData=[ph for ph in phasesMiddle if ~np.isnan(ph)]
-
+print(len(betaMiddleData))
+dl=30
+middleSelectedPic=list(range(0,len(betaMiddleData),dl))
+betaMiddleData=[betaMiddleData[elem ]for elem in middleSelectedPic]
+phasesMiddleData=[phasesMiddleData[elem] for elem in middleSelectedPic]
 
 
 sVal=2
@@ -54,8 +58,12 @@ plt.xlim((0,2))
 plt.ylim((-1,1))
 plt.ylabel("eigenphase$/\pi$",fontsize=ftSize,labelpad=0.05)
 plt.yticks([-1,0,1],fontsize=ftSize )
-plt.legend(loc="best",fontsize=ftSize)
+ax.text(-0.19,1.16,"(i)",fontsize=15)#numbering of figure
+lgnd =ax.legend(loc='upper right', bbox_to_anchor=(1.15, 1.2),fontsize=ftSize)
+for handle in lgnd.legendHandles:
+    handle.set_sizes([25.0])
+
 plt.savefig(dirPrefix+"obcT1"+str(T1)
             # +"omegaF0"
             +"a"+str(a)+"b"+str(b)
-            +".png")
+            +".pdf")

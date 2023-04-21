@@ -8,8 +8,8 @@ import math
 T1=2
 J=2.5
 V=2.5
-N=50
-M=50
+N=50# bloch momentum number
+M=50 # beta number
 class dataPack:
     def __init__(self,i,j):
         self.a=i
@@ -20,7 +20,7 @@ class dataPack:
         self.Omega = 2 * np.pi / T1
         self.Q = 100  # small time interval number
         # self.N = 50  # bloch momentum number
-        # self.M = 50  # beta num
+        # self.M = 50  # beta number
         self.dt = self.T / self.Q
         self.tValsAll = [self.dt * q for q in range(1, self.Q + 1)]
         self.betaValsAll = [2 * np.pi / M * m for m in range(0, M)]
@@ -122,8 +122,8 @@ def calcEigPhaseAndEigVec(dataPack):
         for phiTmp in dataPack.blochValsAll:
             UByPhi.append(U(dataPack,phiTmp, betaTmp))
         UByBetaByPhi.append(UByPhi)
-    phaseByBetaByPhi = []  # eigenphases indexed first by beta, then by phi, finally ascending order
-    eigVecsBybetaByPhi = []  # eigenvectors indexed first by beta, then by k, finally sorted by eigenphases
+    phaseByBetaByPhi = []  # quasienergies indexed first by beta, then by phi, finally ascending order
+    eigVecsBybetaByPhi = []  # eigenvectors indexed first by beta, then by k, finally sorted by quasienergys
     for UByPhiList in UByBetaByPhi:
         phaseByPhi = []
         eigVecsByPhi = []
@@ -189,7 +189,7 @@ def calcChernNumberAndPlot(dataPack1,dataPack2):
         cns2.append(cnTmp)
 
     roundCNS2=[int(round(elem)) for elem in cns2]
-    #### check whether sum=0
+    #### check whether sum=0. If sum=0, then this a, b  combination is a candidate for pumping
     sum1=sum(roundCNS1)
     sum2=sum(roundCNS2)
 
@@ -231,7 +231,7 @@ def calcChernNumberAndPlot(dataPack1,dataPack2):
                             label="band2: " + str(roundCNS1[2]))
     ax1.set_xlabel("$\\beta/\pi$")
     ax1.set_ylabel("$\phi/\pi$")
-    ax1.set_zlabel("eigenphase$/\pi$")
+    ax1.set_zlabel("quasienergy$/\pi$")
     plt.title("$T_{1}=$"+str(T1)+", $T_{1}/T_{2}=$" + str(dataPack1.a) + "/" + str(dataPack1.b))
     surf10._facecolors2d = surf10._facecolor3d
     surf10._edgecolors2d = surf10._edgecolor3d
@@ -261,7 +261,7 @@ def calcChernNumberAndPlot(dataPack1,dataPack2):
     plt.plot(onePhi10, onePhase12, color="red")
     plt.xlabel("k")
     plt.ylim(-1, 1)
-    plt.ylabel("eigenphase$/\pi$")
+    plt.ylabel("quasienergy$/\pi$")
     # plt.title("$\\beta=$"+str(betaValsAll[mval]))
     plt.savefig(outDir + "sample" + str(dataPack1.a) + "over" + str(dataPack1.b) + ".png")
     plt.close()
@@ -292,7 +292,7 @@ def calcChernNumberAndPlot(dataPack1,dataPack2):
                             label="band2: " + str(roundCNS2[2]))
     ax2.set_xlabel("$\\beta/\pi$")
     ax2.set_ylabel("$\phi/\pi$")
-    ax2.set_zlabel("eigenphase$/\pi$")
+    ax2.set_zlabel("quasienergy$/\pi$")
     plt.title("$T_{1}=$"+str(T1)+", $T_{1}/T_{2}=$" + str(dataPack2.a) + "/" + str(dataPack2.b))
     surf20._facecolors2d = surf20._facecolor3d
     surf20._edgecolors2d = surf20._edgecolor3d
@@ -323,7 +323,7 @@ def calcChernNumberAndPlot(dataPack1,dataPack2):
     plt.plot(onePhi20, onePhase22, color="red")
     plt.xlabel("k")
     plt.ylim(-1, 1)
-    plt.ylabel("eigenphase$/\pi$")
+    plt.ylabel("quasienergy$/\pi$")
     # plt.title("$\\beta=$"+str(betaValsAll[mval]))
     plt.savefig(outDir + "sample" + str(dataPack2.a) + "over" + str(dataPack2.b) + ".png")
     plt.close()

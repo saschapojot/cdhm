@@ -5,6 +5,7 @@ from datetime import datetime
 import pandas as pd
 #script for chern number and band
 #consts
+#tunable parameters: T1, a, b
 alpha=1/3
 T1=2
 J=2.5
@@ -19,8 +20,8 @@ omegaF=2*np.pi/T2
 T=T1*b#total small time
 
 Q=100#small time interval number
-N=50#bloch momentum num
-M=50#beta num
+N=50#bloch momentum number
+M=50#beta number
 
 
 dt=T/Q
@@ -124,8 +125,8 @@ for betaTmp in betaValsALl:
     UByBetaByPhi.append(UByPhi)
 
 
-phaseByBetaByPhi=[]#eigenphases indexed first by beta, then by phi, finally ascending order
-eigVecsBybetaByPhi=[]#eigenvectors indexed first by beta, then by k, finally sorted by eigenphases
+phaseByBetaByPhi=[]#quasienergies indexed first by beta, then by phi, finally ascending order
+eigVecsBybetaByPhi=[]#eigenvectors indexed first by beta, then by k, finally sorted by quasienergies
 
 for UByPhiList in UByBetaByPhi:
     phaseByPhi=[]
@@ -165,7 +166,7 @@ for bnum in range(0,3):
 print(cns)
 tEnd=datetime.now()
 print("calculation time:",tEnd-tStart)
-#########################take one beta
+#########################take one beta, plot pbc bands along a section to estimate their distances
 mval=int(M/2)%M
 oneBeta=[]
 onePhase0=[]
@@ -203,7 +204,7 @@ for m in range(0,M):#index of beta
         pltPhase0.append(phaseByBetaByPhi[m][n][0] / np.pi)
         pltPhase1.append(phaseByBetaByPhi[m][n][1] / np.pi)
         pltPhase2.append(phaseByBetaByPhi[m][n][2] / np.pi)
-
+#plot pbc bands
 fig = plt.figure()
 ftSize=16
 
@@ -214,7 +215,7 @@ surf2 = ax.plot_trisurf(pltBt, pltPhi, pltPhase2, linewidth=0.1, color="red",lab
 ax.set_xlabel("$\\beta/\pi$",fontsize=ftSize,labelpad=10)
 ax.tick_params(axis='x', labelsize=ftSize )
 ax.set_ylabel("$\phi/\pi$",fontsize=ftSize,labelpad=10)
-ax.set_zlabel("eigenphase$/\pi$",fontsize=ftSize,labelpad=10)
+ax.set_zlabel("quasienergy$/\pi$",fontsize=ftSize,labelpad=10)
 # ax.tick_params(axis="z",which="major",pad=0)
 ax.tick_params(axis='y', labelsize=ftSize )
 ax.tick_params(axis='z', labelsize=ftSize )

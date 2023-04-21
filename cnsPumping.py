@@ -6,6 +6,7 @@ from pathlib import Path
 #script for pumping
 
 #consts
+#tunable: T1, a, b
 alpha=1/3
 T1=2
 J=2.5
@@ -21,8 +22,8 @@ omegaF=2*np.pi/T2
 T=T2*a#total small time
 
 Q=1000#small time interval number
-N=512#bloch momentum num
-M=2000#beta num
+N=512#bloch momentum number
+M=2000#beta number
 dt=T/Q
 L=3*N
 bandNum=0
@@ -152,7 +153,7 @@ for j in range(0,N):
     eigVecsFromBand[j]*=np.exp(-1j*j*thetaTot/(N))
 
 ####################
-
+#construct Wannier state (centered at 0)
 subLat0=[]
 subLat1=[]
 subLat2=[]
@@ -211,6 +212,7 @@ kTotal=[2*np.pi/(3*N)*j for j in range(0,3*N)]
 state=wsInit
 ini_center = np.sum(locations * (np.abs(wsInit) ** 2))
 tPumpStart=datetime.now()
+#evolution using operator splitting
 for m in range(0,M):
     betaVal=betaValsAll[m]
 
@@ -234,8 +236,9 @@ dis = (f_center - ini_center)/3.0
 
 print(dis)
 
-outDir="./thesis/dataFrameT1"+str(T1)+"a"+str(a)+"b"+str(b)+"/"
+outDir="./dataFrameT1"+str(T1)+"a"+str(a)+"b"+str(b)+"/"
 Path(outDir).mkdir(parents=True,exist_ok=True)
+#plot amplitude of final wave-packet to ensure it does not reach boundary
 plt.figure()
 
 plt.plot(locations, np.abs(state), 'r')
@@ -256,11 +259,12 @@ plt.xlabel("$t/T$")
 plt.savefig(outDir+"T1"+str(T1)+"a"+str(a)+"b"+str(b)+"band"+str(bandNum)+"betaNum"+str(M)+"blochNum"+str(N)+"displacement.png")
 plt.close()
 
+#csv file containing displacements
 dataPdFrame=np.array([np.arange(0,M+1),pumpings]).T
 dfPumping=pd.DataFrame(dataPdFrame,columns=["TNum","displacement"])
 
 dfPumping.to_csv(outDir+"dataFrameT1"+str(T1)+"a"+str(a)+"b"+str(b)+"band"+str(bandNum)+".csv", index=False)
-
+#csv file containing wavefunctions
 outPsidata=np.array(datsAll)
 pdPsi=pd.DataFrame(data=outPsidata)
 pdPsi.to_csv(outDir+"a"+str(a)+"b"+str(b)+"band"+str(bandNum)+"psiAll.csv",index=False)

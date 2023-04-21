@@ -4,8 +4,10 @@ import matplotlib.pyplot as plt
 from multiprocessing import Pool
 from datetime import datetime
 import pandas as pd
-
+from pathlib import Path
+#this script computes obc spectrum
 #consts
+#tunable: T1, a, b
 alpha=1/3
 T1=2
 J=2.5
@@ -20,22 +22,22 @@ omegaF=2*np.pi/T2
 T=T1*b#total small time
 
 Q=100#small time interval number
-N=120#lattice num
-M=500#beta num
+N=120#lattice number
+M=500#beta number
 dt=T/Q
-weight=0.6
-localLength=int(N*0.15)
+weight=0.6#criterion of weight of wavefunction on the edge
+localLength=int(N*0.15)#criterion of length of wavefunction on the edge
 tValsAll=[dt*q for q in range(1,Q+1)]
 betaValsAll=[2*np.pi/M*m for m in range(0,M)]
 
-threadNum=24
+procNum=24
 
 def Hr(tq,beta):
     """
 
     :param tq:
     :param beta:
-    :return:
+    :return: rotated Hamiltonian
     """
     retMat=np.zeros((N,N),dtype=complex)
     for m in range(0,N-1):
@@ -62,7 +64,7 @@ def U(beta):
     """
 
     :param beta:
-    :return:
+    :return: Full Floquet operator
     """
 
     retU=np.eye(N,dtype=complex)
@@ -101,8 +103,8 @@ def selectEdgeStates(vec):
     rightVec=vec[-localLength:]
 
     normVec=np.linalg.norm(vec,ord=2)
-    normLeft=np.linalg.norm(leftVec,ord=2)
-    normRight=np.linalg.norm(rightVec,ord=2)
+    normLeft=np.linalg.norm(leftVec,ord=2)#weight on left edge
+    normRight=np.linalg.norm(rightVec,ord=2)#weight on right edge
 
     wtLeft=normLeft/normVec
     wtRight=normRight/normVec
@@ -137,7 +139,7 @@ def partitionPhaseAndVec(beta):
 
 
 
-pool1=Pool(threadNum)
+pool1=Pool(procNum)
 tStart=datetime.now()
 retAll=pool1.map(partitionPhaseAndVec,betaValsAll)
 tEnd=datetime.now()
@@ -178,10 +180,12 @@ if len(pltBetaRight)<lenMax:
 if len(pltBetaMiddle)<lenMax:
     pltBetaMiddle.extend([np.nan]*(lenMax-len(pltBetaMiddle)))
     pltMidPhase.extend([np.nan]*(lenMax-len(pltMidPhase)))
-
+#csv of obc spectrum values
+outDir="./dataFrameT1"+str(T1)+"a"+str(a)+"b"+str(b)+"/"
+Path(outDir).mkdir(parents=True,exist_ok=True)
 dataOut=np.array([pltBetaLeft,pltLeftPhase,pltBetaRight,pltRightPhase,pltBetaMiddle,pltMidPhase]).T
 dtFrm=pd.DataFrame(data=dataOut,columns=["betaLeft","phasesLeft","betaRight","phasesRight","betaMiddle","phasesMiddle"])
-dtFrm.to_csv("obcT1"+str(T1)+"a"+str(a)+"b"+str(b)+".csv", index=False
+dtFrm.to_csv(outDir+"obcT1"+str(T1)+"a"+str(a)+"b"+str(b)+".csv", index=False
              )
 
 # sVal=2

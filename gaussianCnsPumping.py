@@ -7,22 +7,23 @@ from pathlib import Path
 #script for pumping of gaussian wavepacket
 
 #consts
+#tunable: T1, a, b
 alpha=1/3
-T1=2
+T1=4
 J=2.5
 V=2.5
 Omega=2*np.pi/T1
 
 
-a=3
-b=1
+a=2
+b=5
 T2=T1*b/a
 omegaF=2*np.pi/T2
 T=T2*a#total small time
 
 Q=1000#small time interval number
-N=512#bloch momentum num
-M=2000#beta num
+N=512*4#bloch momentum number
+M=6000#beta number
 dt=T/Q
 L=3*N
 bandNum=0
@@ -30,7 +31,7 @@ tValsAll=[dt*q for q in range(1,Q+1)]
 betaValsAll=[2*np.pi/M*m for m in range(0,M)]
 blochValsAll=[2*np.pi/N*n for n in range(0,N+1)]
 
-threadNum=24
+procNum=24
 
 def A1(phi):
     """
@@ -122,7 +123,7 @@ betaStart=betaValsAll[0]
 def UWrapper(phiTmp):
     return [phiTmp,U(phiTmp,betaStart)]
 
-pool0=Pool(threadNum)
+pool0=Pool(procNum)
 ret0=pool0.map(UWrapper,blochValsAll)
 
 ret0=sorted(ret0,key=lambda  elem: elem[0])
@@ -166,18 +167,19 @@ wsInit=np.zeros(3*N,dtype=complex)
 
 
 #####ifft handwritten2
+#construct Wannier state (centered at R)
 # # real space basis
 realBasis = []
 for n in range(0, N):
     basisTmp = np.zeros(N, dtype=complex)
     basisTmp[n] = 1
     realBasis.append(basisTmp)
-center=0
-sgm=2
+# center=0
+sgm=1/4
 R=0
 for j in range(0,N):
     for n in range(0,N):
-        wsInit+=np.kron(realBasis[n],eigVecsFromBand[j])*np.exp(1j*(n-R)*blochValsAll[j])*np.exp(-sgm**2*blochValsAll[j]**2)
+        wsInit+=np.kron(realBasis[n],eigVecsFromBand[j])*np.exp(1j*(n-R)*blochValsAll[j])*np.exp(-1/(4*sgm**2)*blochValsAll[j]**2)
 
 ##################
 # for j in range(0,N):
@@ -185,10 +187,10 @@ for j in range(0,N):
 #     wsInit[3*j+1]=realSubLat1[j]
 #     wsInit[3*j+2]=realSubLat2[j]
 wsInit /= np.linalg.norm(wsInit,ord=2)
-datsAll.append(wsInit)
+datsAll.append(wsInit)# vecs of evolution
 
 tEigEnd = datetime.now()
-outDirPrefix="./gaussian/"
+outDirPrefix="./gaussian/dataFrameT1"+str(T1)+"a"+str(a)+"b"+str(b)+"/"
 Path(outDirPrefix).mkdir(parents=True, exist_ok=True)
 
 q=3
@@ -204,6 +206,7 @@ kTotal=[2*np.pi/(3*N)*j for j in range(0,3*N)]
 state=wsInit
 ini_center = np.sum(locations * (np.abs(wsInit) ** 2))
 tPumpStart=datetime.now()
+#evolution using operator splitting
 for m in range(0,M):
     betaVal=betaValsAll[m]
 
@@ -226,7 +229,7 @@ dis = (f_center - ini_center)/3.0
 
 print(dis)
 
-
+#plot amplitude of final wave-packet to ensure it does not reach boundary
 
 plt.figure()
 
@@ -246,9 +249,15 @@ plt.title("$T_{1}/T_{2}=$"+str(a)+"/"+str(b)+", pumping = "+str(dis)+", band"+st
 plt.xlabel("$t/T$")
 plt.savefig(outDirPrefix+"band"+str(bandNum)+"Gaussiana"+str(a)+"b"+str(b)+"betaNum"+str(M)+"blochNum"+str(N)+"displacement.png")
 plt.close()
-
+#csv file containing displacements
 outData=np.array([range(0,M+1),pumpings]).T
 
 outDtFrm=pd.DataFrame(data=outData,columns=["t","pumping"])
 
 outDtFrm.to_csv(outDirPrefix+"gaussianBand"+str(bandNum)+".csv")
+
+
+#csv file containing wavefunctions
+outPsidata=np.array(datsAll)
+pdPsi=pd.DataFrame(data=outPsidata)
+pdPsi.to_csv(outDirPrefix+"band"+str(bandNum)+"psiAll.csv",index=False)
