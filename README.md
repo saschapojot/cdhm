@@ -1,3 +1,5 @@
+This repository is the python implementation of 1-body part in paper https://journals.aps.org/prb/abstract/10.1103/PhysRevB.106.224309  
+
 1. Eigenvalue problem for pbc
 (a) To compute eigenvalue problem for 1 ratio a/b, run cns.py
 (b) To scan different ratios a/b, run runTwoPairCNS.py, where twoPairCNS.py is imported.
